@@ -2,9 +2,9 @@
 
 namespace Emanate\Nyundo;
 
+use Emanate\Nyundo\Http\Middleware\CheckLicense;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use Emanate\Nyundo\Http\Middleware\CheckLicense;
 
 class NyundoServiceProvider extends PackageServiceProvider
 {
