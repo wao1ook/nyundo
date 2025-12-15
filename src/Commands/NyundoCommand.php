@@ -1,12 +1,12 @@
 <?php
 
-namespace VendorName\Skeleton\Commands;
+namespace Emanate\Nyundo\Commands;
 
 use Illuminate\Console\Command;
 
-class SkeletonCommand extends Command
+class NyundoCommand extends Command
 {
-    public $signature = 'skeleton';
+    public $signature = 'nyundo';
 
     public $description = 'My command';
 
