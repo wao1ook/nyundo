@@ -1,9 +1,8 @@
 {
-    "name": "wao1ook/nyundo",
+    "name": "emanate/nyundo",
     "description": "License Manager",
     "keywords": [
         "Emanate Software",
-        "laravel",
         "nyundo"
     ],
     "homepage": "https://github.com/wao1ook/nyundo",
