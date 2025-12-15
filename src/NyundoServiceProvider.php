@@ -4,7 +4,7 @@ namespace Emanate\Nyundo;
 
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use Emanate\Nyundo\Commands\NyundoCommand;
+use Emanate\Nyundo\Http\Middleware\CheckLicense;
 
 class NyundoServiceProvider extends PackageServiceProvider
 {
@@ -18,8 +18,13 @@ class NyundoServiceProvider extends PackageServiceProvider
         $package
             ->name('nyundo')
             ->hasConfigFile()
-            ->hasViews()
-            ->hasMigration('create_nyundo_table')
-            ->hasCommand(NyundoCommand::class);
+            ->hasViews();
+    }
+
+    public function packageBooted()
+    {
+        // Register the middleware with an alias
+        $router = $this->app['router'];
+        $router->aliasMiddleware('nyundo.checklicense', CheckLicense::class);
     }
 }
