@@ -11,7 +11,6 @@ class CheckLicense
     /**
      * Handle an incoming request.
      *
-     * @param Request $request
      * @param  \Closure(Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
@@ -24,7 +23,7 @@ class CheckLicense
         $supportInfo = config('nyundo.support', []);
 
         // 1. Check if license expiration date is configured
-        if (!$expirationDateString) {
+        if (! $expirationDateString) {
             // Log this error, but don't abort unless this is critical for your application's use.
             // For a package, it's safer to just proceed if configuration is missing,
             // or return an error view if you intend for the license to be mandatory.
