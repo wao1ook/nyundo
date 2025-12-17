@@ -1,19 +1,8 @@
-# License Manager
-
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/wao1ook/nyundo.svg?style=flat-square)](https://packagist.org/packages/wao1ook/nyundo)
-[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/wao1ook/nyundo/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/wao1ook/nyundo/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/wao1ook/nyundo/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/wao1ook/nyundo/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
-[![Total Downloads](https://img.shields.io/packagist/dt/wao1ook/nyundo.svg?style=flat-square)](https://packagist.org/packages/wao1ook/nyundo)
-
-This is where your description should go. Limit it to a paragraph or two. Consider adding a small example.
-
-## Support us
-
-[<img src="https://github-ads.s3.eu-central-1.amazonaws.com/nyundo.jpg?t=1" width="419px" />](https://spatie.be/github-ad-click/nyundo)
-
-We invest a lot of resources into creating [best in class open source packages](https://spatie.be/open-source). You can support us by [buying one of our paid products](https://spatie.be/open-source/support-us).
-
-We highly appreciate you sending us a postcard from your hometown, mentioning which of our package(s) you are using. You'll find our address on [our contact page](https://spatie.be/about-us). We publish all received postcards on [our virtual postcard wall](https://spatie.be/open-source/postcards).
+# License Manager Package for your Laravel Applications
+[![Latest Stable Version](https://poser.pugx.org/emanate/nyundo/v)](https://packagist.org/packages/emanate/nyundo)
+[![Total Downloads](https://poser.pugx.org/emanate/nyundo/downloads)](https://packagist.org/packages/emanate/nyundo)
+[![Monthly Downloads](https://poser.pugx.org/emanate/nyundo/d/monthly)](https://packagist.org/packages/emanate/nyundo)
+[![License](https://poser.pugx.org/emanate/nyundo/license)](https://packagist.org/packages/emanate/nyundo)
 
 ## Installation
 
@@ -21,13 +10,6 @@ You can install the package via composer:
 
 ```bash
 composer require wao1ook/nyundo
-```
-
-You can publish and run the migrations with:
-
-```bash
-php artisan vendor:publish --tag="nyundo-migrations"
-php artisan migrate
 ```
 
 You can publish the config file with:
@@ -40,6 +22,44 @@ This is the contents of the published config file:
 
 ```php
 return [
+    /*
+    |--------------------------------------------------------------------------
+    | License Settings
+    |--------------------------------------------------------------------------
+    |
+    | These values are typically set via environment variables in your .env file.
+    | They define the key parameters for license validation and display.
+    |
+    */
+
+    'key' => env('LICENSE_KEY', null),
+
+    // The date the license expires (format YYYY-MM-DD)
+    'expiration_date' => env('LICENSE_EXPIRATION_DATE', null),
+
+    // The name of the license holder (e.g., Your Company Name)
+    'holder' => env('LICENSE_HOLDER', null),
+
+    // Email of the license holder
+    'email' => env('LICENSE_EMAIL', null),
+
+    // Number of days before expiration to start showing a warning
+    'warning_days' => (int) env('LICENSE_WARNING_DAYS', 7),
+
+    // Number of days after expiration to allow access (grace period)
+    'grace_period_days' => (int) env('LICENSE_GRACE_PERIOD_DAYS', 0),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Support Information (Displayed on the license expired page)
+    |--------------------------------------------------------------------------
+    */
+
+    'support' => [
+        'phone' => env('LICENSE_SUPPORT_PHONE', '+2557123456789'),
+        'email' => env('LICENSE_SUPPORT_EMAIL', 'support@example.com'),
+        'hours' => env('LICENSE_SUPPORT_HOURS', 'Monday - Friday, 9:00 AM - 5:00 PM'),
+    ],
 ];
 ```
 
@@ -51,16 +71,7 @@ php artisan vendor:publish --tag="nyundo-views"
 
 ## Usage
 
-```php
-$nyundo = new Emanate\Nyundo();
-echo $nyundo->echoPhrase('Hello, Emanate!');
-```
 
-## Testing
-
-```bash
-composer test
-```
 
 ## Changelog
 
