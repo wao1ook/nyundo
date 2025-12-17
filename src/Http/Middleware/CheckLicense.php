@@ -8,15 +8,10 @@ use Illuminate\Http\Request;
 
 class CheckLicense
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
-     * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
-     */
     public function handle(Request $request, Closure $next)
     {
         $expirationDateString = config('nyundo.expiration_date');
+        $holder = config('nyundo.holder');
         $warningDays = config('nyundo.warning_days', 7);
         $gracePeriodDays = config('nyundo.grace_period_days', 0);
         $supportInfo = config('nyundo.support', []);
@@ -43,6 +38,7 @@ class CheckLicense
                 'gracePeriodExpired' => $gracePeriodDays > 0,
                 'gracePeriodEnd' => $gracePeriodEnd->toDateString(),
                 'support' => $supportInfo,
+                'holder' => $holder,
             ]);
         }
 

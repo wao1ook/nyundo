@@ -35,8 +35,8 @@ return [
     */
 
     'support' => [
+        'phone' => env('LICENSE_SUPPORT_PHONE', '+2557123456789'),
         'email' => env('LICENSE_SUPPORT_EMAIL', 'support@example.com'),
-        'phone' => env('LICENSE_SUPPORT_PHONE', '+1-555-123-4567'),
         'hours' => env('LICENSE_SUPPORT_HOURS', 'Monday - Friday, 9:00 AM - 5:00 PM'),
     ],
 ];
