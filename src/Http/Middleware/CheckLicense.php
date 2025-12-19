@@ -8,6 +8,10 @@ use Illuminate\Http\Request;
 
 class CheckLicense
 {
+    public const SESSION_WARNING = 'nyundo_license_warning';
+
+    public const SESSION_ERROR = 'nyundo_license_error';
+
     public function handle(Request $request, Closure $next)
     {
         $expirationDateString = config('nyundo.expiration_date');
@@ -29,30 +33,38 @@ class CheckLicense
         $today = Carbon::today();
         $gracePeriodEnd = $expirationDate->copy()->addDays($gracePeriodDays);
 
+        // License is fully expired (beyond grace period)
         if ($today > $gracePeriodEnd) {
-            $daysExpired = $today->diffInDays($expirationDate, false);
-
-            return response()->view('nyundo::expired', [
-                'expirationDate' => $expirationDate->toDateString(),
-                'daysExpired' => $daysExpired,
-                'gracePeriodExpired' => $gracePeriodDays > 0,
-                'gracePeriodEnd' => $gracePeriodEnd->toDateString(),
-                'support' => $supportInfo,
-                'holder' => $holder,
-            ]);
+            return $this->renderExpiredView($expirationDate, $gracePeriodEnd, $gracePeriodDays, $supportInfo, $holder);
         }
 
-        if ($expirationDate < $today && $today <= $gracePeriodEnd) {
+        // Within grace period
+        if ($today > $expirationDate) {
             $daysInGrace = $today->diffInDays($expirationDate, false);
             $daysLeftInGrace = $gracePeriodEnd->diffInDays($today, false);
-            session()->flash('nyundo_license_error', "Your license expired {$daysInGrace} days ago. Grace period ends in {$daysLeftInGrace} days.");
+            session()->flash(self::SESSION_ERROR, "Your license expired {$daysInGrace} days ago. Grace period ends in {$daysLeftInGrace} days.");
         }
 
+        // Within warning period
         $daysRemaining = $today->diffInDays($expirationDate, false);
-        if ($daysRemaining <= $warningDays && $daysRemaining > 0) {
-            session()->flash('nyundo_license_warning', "Your license will expire in {$daysRemaining} days. Please renew soon.");
+        if ($daysRemaining <= $warningDays && $daysRemaining >= 0) {
+            session()->flash(self::SESSION_WARNING, "Your license will expire in {$daysRemaining} days. Please renew soon.");
         }
 
         return $next($request);
+    }
+
+    protected function renderExpiredView(Carbon $expirationDate, Carbon $gracePeriodEnd, int $gracePeriodDays, array $supportInfo, ?string $holder)
+    {
+        $daysExpired = Carbon::today()->diffInDays($expirationDate, false);
+
+        return response()->view('nyundo::expired', [
+            'expirationDate' => $expirationDate->toDateString(),
+            'daysExpired' => $daysExpired,
+            'gracePeriodExpired' => $gracePeriodDays > 0,
+            'gracePeriodEnd' => $gracePeriodEnd->toDateString(),
+            'support' => $supportInfo,
+            'holder' => $holder,
+        ]);
     }
 }

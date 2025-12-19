@@ -2,6 +2,7 @@
 
 namespace Emanate\Nyundo;
 
+use Emanate\Nyundo\Commands\NyundoStatusCommand;
 use Emanate\Nyundo\Http\Middleware\CheckLicense;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
@@ -13,7 +14,8 @@ class NyundoServiceProvider extends PackageServiceProvider
         $package
             ->name('nyundo')
             ->hasConfigFile()
-            ->hasViews();
+            ->hasViews()
+            ->hasCommand(NyundoStatusCommand::class);
     }
 
     public function packageBooted()
