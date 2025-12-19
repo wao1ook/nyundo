@@ -42,13 +42,17 @@ class CheckLicense
         if ($today > $expirationDate) {
             $daysInGrace = $today->diffInDays($expirationDate, false);
             $daysLeftInGrace = $gracePeriodEnd->diffInDays($today, false);
-            session()->flash(self::SESSION_ERROR, "Your license expired {$daysInGrace} days ago. Grace period ends in {$daysLeftInGrace} days.");
+            $message = "Your license expired {$daysInGrace} days ago. Grace period ends in {$daysLeftInGrace} days.";
+            session()->now(self::SESSION_ERROR, $message);
+            session()->flash(self::SESSION_ERROR, $message);
         }
 
         // Within warning period
         $daysRemaining = $today->diffInDays($expirationDate, false);
         if ($daysRemaining <= $warningDays && $daysRemaining >= 0) {
-            session()->flash(self::SESSION_WARNING, "Your license will expire in {$daysRemaining} days. Please renew soon.");
+            $message = "Your license will expire in {$daysRemaining} days. Please renew soon.";
+            session()->now(self::SESSION_WARNING, $message);
+            session()->flash(self::SESSION_WARNING, $message);
         }
 
         return $next($request);

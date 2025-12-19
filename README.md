@@ -22,6 +22,23 @@ php artisan vendor:publish --tag="nyundo-config"
 
 ## Configuration
 
+### Environment Variables
+
+Add these variables to your `.env` file:
+
+```bash
+LICENSE_KEY="YOUR-LICENSE-KEY"
+LICENSE_HOLDER="Your Company"
+LICENSE_EXPIRATION_DATE="2025-12-31"
+LICENSE_WARNING_DAYS=7
+LICENSE_GRACE_PERIOD_DAYS=0
+LICENSE_SUPPORT_PHONE="+2557123456789"
+LICENSE_SUPPORT_EMAIL="support@example.com"
+LICENSE_SUPPORT_HOURS="Monday - Friday, 9:00 AM - 5:00 PM"
+```
+
+### Config File
+
 This is the contents of the published config file:
 
 ```php
@@ -46,9 +63,21 @@ return [
 
 ## Usage
 
+## Usage
+
 ### Middleware
 
-To enforce license checks, add the `nyundo.check-license` middleware to your routes:
+To enforce license checks, add the `nyundo.check-license` middleware to your routes in `routes/web.php`. 
+
+For example, you can add it to your login route to show warnings to your users before they log in:
+
+```php
+Route::get('/login', [LoginController::class, 'showLoginForm'])
+    ->middleware('nyundo.check-license')
+    ->name('login');
+```
+
+Or protect an entire group of routes (this will redirect users to the expiration page if the license is fully expired):
 
 ```php
 Route::middleware(['nyundo.check-license'])->group(function () {
@@ -58,7 +87,7 @@ Route::middleware(['nyundo.check-license'])->group(function () {
 
 ### CLI Command
 
-You can check the current status of your license from the terminal:
+Check your license status directly from the terminal:
 
 ```bash
 php artisan nyundo:status
@@ -66,23 +95,11 @@ php artisan nyundo:status
 
 ## Customization
 
-### Views
+### Displaying Warnings in your UI
 
-If you want to customize the expiration page, you can publish the views:
+The middleware automatically prepares messages for you. Add this snippet to your Blade templates (e.g., in your login or dashboard views) to display them.
 
-```bash
-php artisan vendor:publish --tag="nyundo-views"
-```
-
-The view will be published to `resources/views/vendor/nyundo/expired.blade.php`.
-
-### Session Messages
-
-The middleware flashes messages to the session which you can display in your layout:
-
-- `nyundo_license_warning`: Shown when the license is nearing expiration.
-- `nyundo_license_error`: Shown during the grace period.
-
+#### Basic Example:
 ```blade
 @if(session('nyundo_license_warning'))
     <div class="alert alert-warning">
@@ -90,6 +107,31 @@ The middleware flashes messages to the session which you can display in your lay
     </div>
 @endif
 ```
+
+#### Premium UI Example (Tailwind + Lucide):
+```blade
+@if(session('nyundo_license_warning') || session('nyundo_license_error'))
+    <div class="mb-6 p-4 rounded-lg flex items-start gap-3 border {{ session('nyundo_license_error') ? 'bg-red-50 border-red-100 dark:bg-red-900/10 dark:border-red-800' : 'bg-amber-50 border-amber-100 dark:bg-amber-900/10 dark:border-amber-800' }}">
+        <div class="shrink-0 p-1.5 rounded-full {{ session('nyundo_license_error') ? 'bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400' : 'bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400' }}">
+            <i class="w-4 h-4" data-lucide="{{ session('nyundo_license_error') ? 'alert-octagon' : 'alert-triangle' }}"></i>
+        </div>
+        <div class="text-sm leading-relaxed {{ session('nyundo_license_error') ? 'text-red-800 dark:text-red-200' : 'text-amber-800 dark:text-amber-200' }}">
+            <strong class="block mb-0.5">{{ session('nyundo_license_error') ? 'License Expired' : 'License Warning' }}</strong>
+            {{ session('nyundo_license_error') ?? session('nyundo_license_warning') }}
+        </div>
+    </div>
+@endif
+```
+
+### Customizing the Expiration Page
+
+If you want to customize the full-screen expiration page, publish the views:
+
+```bash
+php artisan vendor:publish --tag="nyundo-views"
+```
+
+The view will be published to `resources/views/vendor/nyundo/expired.blade.php`.
 
 ## Changelog
 
