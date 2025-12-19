@@ -35,6 +35,7 @@ LICENSE_GRACE_PERIOD_DAYS=0
 LICENSE_SUPPORT_PHONE="+2557123456789"
 LICENSE_SUPPORT_EMAIL="support@example.com"
 LICENSE_SUPPORT_HOURS="Monday - Friday, 9:00 AM - 5:00 PM"
+NYUNDO_PASSWORD="your-strong-password"
 ```
 
 ### Config File
@@ -58,10 +59,10 @@ return [
         'email' => env('LICENSE_SUPPORT_EMAIL', 'support@example.com'),
         'hours' => env('LICENSE_SUPPORT_HOURS', 'Monday - Friday, 9:00 AM - 5:00 PM'),
     ],
+
+    'nyundo_password' => env('NYUNDO_PASSWORD', null),
 ];
 ```
-
-## Usage
 
 ## Usage
 
@@ -85,12 +86,24 @@ Route::middleware(['nyundo.check-license'])->group(function () {
 });
 ```
 
-### CLI Command
+### CLI Commands
 
+#### Status Check
 Check your license status directly from the terminal:
 
 ```bash
 php artisan nyundo:status
+```
+
+#### Apply License
+Apply a new license securely via the command line. This requires the `NYUNDO_PASSWORD` to be set in your `.env` file. If you omit the `--password` flag, you will be prompted to enter it securely.
+
+```bash
+php artisan nyundo:renew \
+    --license-key="ABC-123" \
+    --expiry-date="2026-12-31" \
+    --warning-days=10 \
+    --grace-period=5
 ```
 
 ## Customization
@@ -108,7 +121,7 @@ The middleware automatically prepares messages for you. Add this snippet to your
 @endif
 ```
 
-#### Premium UI Example (Tailwind + Lucide):
+#### Tailwind + Lucide Example:
 ```blade
 @if(session('nyundo_license_warning') || session('nyundo_license_error'))
     <div class="mb-6 p-4 rounded-lg flex items-start gap-3 border {{ session('nyundo_license_error') ? 'bg-red-50 border-red-100 dark:bg-red-900/10 dark:border-red-800' : 'bg-amber-50 border-amber-100 dark:bg-amber-900/10 dark:border-amber-800' }}">

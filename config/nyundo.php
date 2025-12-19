@@ -39,4 +39,12 @@ return [
         'email' => env('LICENSE_SUPPORT_EMAIL', 'support@example.com'),
         'hours' => env('LICENSE_SUPPORT_HOURS', 'Monday - Friday, 9:00 AM - 5:00 PM'),
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Management Settings
+    |--------------------------------------------------------------------------
+    */
+
+    'nyundo_password' => env('NYUNDO_PASSWORD', null),
 ];
